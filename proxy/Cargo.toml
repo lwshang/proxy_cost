@@ -12,3 +12,4 @@ path = "lib.rs"
 [dependencies]
 candid = "0.10"
 ic-cdk = "0.18"
+serde = { version = "1", features = ["derive"] }

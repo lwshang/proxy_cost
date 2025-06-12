@@ -1,3 +1,10 @@
+type ProxyCallArgs = record {
+    canister_id : principal;
+    method : text;
+    args : blob;
+    attach_cycles : nat
+}
+
 service : {
-    "greet": (text) -> (text) query;
+    "proxy_call" : (ProxyCallArgs) -> (blob)
 }

@@ -1,4 +1,4 @@
-#[ic_cdk::query]
-fn greet(name: String) -> String {
-    format!("Hello, {}!", name)
-}
+use ic_cdk::update;
+
+#[update]
+fn empty() {}
