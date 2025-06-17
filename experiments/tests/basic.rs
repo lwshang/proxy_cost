@@ -29,12 +29,26 @@ fn basic() {
         println!(" {}, {}", len, cycles);
     }
 
-    println!("2. Fixed length aeguments, specific length replies:");
+    println!("2. Fixed length arguments, specific length replies:");
     for i in 0..10 {
         let len: u32 = 100 * i;
         let args = Encode!(&len).unwrap();
         let cycles =
             make_proxy_request(&pic, proxy_canister_id, dest_canister_id, "reply_vec", args);
+        println!(" {}, {}", len, cycles);
+    }
+
+    println!("3. Fixed length arguments, specific length rejects:");
+    for i in 0..10 {
+        let len: u32 = 100 * i;
+        let args = Encode!(&len).unwrap();
+        let cycles = make_proxy_request(
+            &pic,
+            proxy_canister_id,
+            dest_canister_id,
+            "reject_vec",
+            args,
+        );
         println!(" {}, {}", len, cycles);
     }
 }
@@ -54,14 +68,13 @@ fn make_proxy_request(
     };
     let balance00 = pic.cycle_balance(proxy_canister_id);
 
-    let _res: (Vec<u8>,) = call_candid(
+    let _res: Result<(Vec<u8>,), _> = call_candid(
         pic,
         proxy_canister_id,
         pocket_ic::common::rest::RawEffectivePrincipal::None,
         "proxy_call",
         (args,),
-    )
-    .expect("Failed to call proxy canister");
+    );
     let balance01 = pic.cycle_balance(proxy_canister_id);
     balance00 - balance01
 }

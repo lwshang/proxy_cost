@@ -1,4 +1,5 @@
 service : {
     "empty" : () -> ();
-    "reply_vec" : (nat32) -> (blob)
+    "reply_vec" : (nat32) -> (blob);
+    "reject_vec" : (nat32) -> ()
 }
