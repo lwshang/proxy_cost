@@ -1,4 +1,4 @@
-use candid::Principal;
+use candid::{Encode, Principal};
 use pocket_ic::{call_candid, PocketIc};
 use proxy::ProxyCallArgs;
 use std::{path::PathBuf, process::Command};
@@ -16,6 +16,7 @@ fn basic() {
     pic.add_cycles(dest_canister_id, 100_000_000_000_000);
     pic.install_canister(dest_canister_id, dest_wasm, vec![], None);
 
+    println!("1. Specific length arguments, fixed length replies:");
     for i in 0..10 {
         let len = 100 * i;
         let cycles = make_proxy_request(
@@ -25,6 +26,15 @@ fn basic() {
             "empty",
             vec![0; len],
         );
+        println!(" {}, {}", len, cycles);
+    }
+
+    println!("2. Fixed length aeguments, specific length replies:");
+    for i in 0..10 {
+        let len: u32 = 100 * i;
+        let args = Encode!(&len).unwrap();
+        let cycles =
+            make_proxy_request(&pic, proxy_canister_id, dest_canister_id, "reply_vec", args);
         println!(" {}, {}", len, cycles);
     }
 }
@@ -71,5 +81,6 @@ fn build_canister(name: &str) -> Vec<u8> {
     let wasm_path = PathBuf::from(format!(
         "../target/wasm32-unknown-unknown/canister-release/{name}.wasm"
     ));
-    std::fs::read(&wasm_path).unwrap_or_else(|_| panic!("failed to read the {name} canister wasm file"))
+    std::fs::read(&wasm_path)
+        .unwrap_or_else(|_| panic!("failed to read the {name} canister wasm file"))
 }
