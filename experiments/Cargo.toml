@@ -1,0 +1,9 @@
+[package]
+name = "experiments"
+version = "0.1.0"
+edition = "2021"
+
+[dev-dependencies]
+candid = "0.10"
+pocket-ic = "9"
+proxy = { path = "../proxy" }

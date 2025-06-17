@@ -1,3 +1,10 @@
 [workspace]
-members = ["proxy", "dest"]
+members = ["proxy", "dest", "experiments"]
 resolver = "2"
+
+[profile.canister-release]
+inherits = "release"
+debug = false
+panic = "abort"
+lto = true
+opt-level = 'z'
