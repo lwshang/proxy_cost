@@ -1,4 +1,4 @@
-use candid::{Encode, Principal};
+use candid::Principal;
 use pocket_ic::{call_candid, PocketIc};
 use proxy::ProxyCallArgs;
 use std::{path::PathBuf, process::Command};
@@ -16,32 +16,33 @@ fn basic() {
     pic.add_cycles(dest_canister_id, 100_000_000_000_000);
     pic.install_canister(dest_canister_id, dest_wasm, vec![], None);
 
-    println!("1. Specific length arguments, fixed length replies:");
+    println!("1. Specific length inputs, fixed length replies:");
     for i in 0..10 {
         let len = 100 * i;
         let cycles = make_proxy_request(
             &pic,
             proxy_canister_id,
             dest_canister_id,
-            "empty",
+            "var_arg", // the method name takes 7 bytes
             vec![0; len],
         );
-        println!(" {}, {}", len, cycles);
+        // The byte length of the input must be accurate here, because we will use the intercept as the base fee.
+        println!("{},  {}", len + 7, cycles);
     }
 
-    println!("2. Fixed length arguments, specific length replies:");
+    println!("2. Fixed length inputs, specisfic length replies:");
     for i in 0..10 {
-        let len: u32 = 100 * i;
-        let args = Encode!(&len).unwrap();
+        let len: u16 = 100 * i;
+        let args = len.to_be_bytes().to_vec();
         let cycles =
             make_proxy_request(&pic, proxy_canister_id, dest_canister_id, "reply_vec", args);
-        println!(" {}, {}", len, cycles);
+        println!("{}, {}", len, cycles);
     }
 
-    println!("3. Fixed length arguments, specific length rejects:");
+    println!("3. Fixed length inputs, specific length rejects:");
     for i in 0..10 {
-        let len: u32 = 100 * i;
-        let args = Encode!(&len).unwrap();
+        let len: u16 = 100 * i;
+        let args = len.to_be_bytes().to_vec();
         let cycles = make_proxy_request(
             &pic,
             proxy_canister_id,
@@ -49,7 +50,7 @@ fn basic() {
             "reject_vec",
             args,
         );
-        println!(" {}, {}", len, cycles);
+        println!("{}, {}", len, cycles);
     }
 }
 
