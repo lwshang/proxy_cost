@@ -30,7 +30,7 @@ fn basic() {
         println!("{},  {}", len + 7, cycles);
     }
 
-    println!("2. Fixed length inputs, specisfic length replies:");
+    println!("2. Fixed length inputs, specific length replies:");
     for i in 0..10 {
         let len: u16 = 100 * i;
         let args = len.to_be_bytes().to_vec();

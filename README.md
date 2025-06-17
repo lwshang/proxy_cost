@@ -30,7 +30,7 @@ Then the `stdout` will contains the experiment data:
 707,  14244261
 807,  14599908
 907,  14956523
-2. Fixed length inputs, specisfic length replies:
+2. Fixed length inputs, specific length replies:
 0, 11759224
 100, 11883676
 200, 12007133
